@@ -1,0 +1,47 @@
+{
+  "strategy": {
+    "start": "2022-06-02",
+    "end": "2026-10-08",
+    "final_equity": 21586.69,
+    "total_return_pct": 115.87,
+    "cagr_pct": 19.35,
+    "sharpe": 0.95,
+    "max_drawdown_pct": -21.28,
+    "volatility_pct": 20.96,
+    "trades": 613
+  },
+  "buy_and_hold": {
+    "start": "2022-06-02",
+    "end": "2026-10-08",
+    "final_equity": 22390.9,
+    "total_return_pct": 123.91,
+    "cagr_pct": 20.36,
+    "sharpe": 0.61,
+    "max_drawdown_pct": -64.74,
+    "volatility_pct": 63.53,
+    "trades": 0
+  },
+  "config": {
+    "symbols": [
+      "BTCUSD",
+      "ETHUSD",
+      "SOLUSD"
+    ],
+    "strategy": {
+      "lookbacks": [
+        20,
+        60,
+        120
+      ],
+      "regime_ma": 150,
+      "vol_window": 30,
+      "target_vol": 0.4,
+      "max_weight": 1.0
+    },
+    "costs": {
+      "fee": 0.001,
+      "slippage": 0.0005,
+      "rebalance_band": 0.03
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "symbols": ["BTCUSD", "ETHUSD", "SOLUSD"],
+  "initial_capital": 10000,
+  "data_sources": ["coinbase", "binance", "fmp"],
+  "strategy": {
+    "lookbacks": [20, 60, 120],
+    "regime_ma": 150,
+    "vol_window": 30,
+    "target_vol": 0.40,
+    "max_weight": 1.0
+  },
+  "costs": {
+    "fee": 0.001,
+    "slippage": 0.0005,
+    "rebalance_band": 0.03
+  }
+}

@@ -1,0 +1,51 @@
+name: trading-bot
+
+on:
+  schedule:
+    - cron: "17 0 * * *"   # every day, just after the UTC daily candle closes
+  workflow_dispatch:
+    inputs:
+      broker:
+        description: "paper (simulated), testnet (Binance testnet) or live (real money)"
+        default: paper
+        type: choice
+        options: [paper, testnet, live]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trading-bot
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: trading-bot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt pytest
+      - run: python -m pytest -q tests
+      - name: Trade
+        env:
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+          BINANCE_API_KEY: ${{ secrets.BINANCE_API_KEY }}
+          BINANCE_API_SECRET: ${{ secrets.BINANCE_API_SECRET }}
+          BINANCE_LIVE: ${{ vars.BINANCE_LIVE }}
+        run: |
+          python -m bot tick --update --broker "${{ inputs.broker || 'paper' }}"
+          python -m bot status --broker "${{ inputs.broker || 'paper' }}" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Save journal
+        run: |
+          git config user.name "trading-bot"
+          git config user.email "trading-bot@users.noreply.github.com"
+          git add data state
+          git diff --cached --quiet && exit 0
+          git commit -m "trading-bot: tick $(date -u +%F)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
